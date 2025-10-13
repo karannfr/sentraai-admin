@@ -16,7 +16,6 @@ export default function ProtectedPage() {
       await getSession();
       setLoading(false);
     }
-
     checkSession();
   }, [getSession]);
 
