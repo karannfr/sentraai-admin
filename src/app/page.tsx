@@ -5,7 +5,6 @@ import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
-import useSessionStore from "@/store/useSessionStore";
 
 export default function Home() {
   const searchParams = useSearchParams();
