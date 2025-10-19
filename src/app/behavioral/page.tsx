@@ -12,8 +12,6 @@ export default function Behavioral() {
   const {
     data: session,
     isPending, // loading state
-    error,
-    refetch,
   } = authClient.useSession();
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 import DashboardCard from "@/components/dashboard-card";
@@ -16,8 +16,6 @@ export default function Dahsboard() {
   const {
     data: session,
     isPending, // loading state
-    error,
-    refetch,
   } = authClient.useSession();
 
   useEffect(() => {

@@ -15,7 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem
 } from "./ui/dropdown-menu"
 
 import { ChevronUp } from "lucide-react"
@@ -32,7 +31,7 @@ import {
 } from "lucide-react";
 
 export function AppSidebar() {
-  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   return (
     <Sidebar>
       <SidebarHeader>

@@ -36,6 +36,8 @@ import {
 import toast, { Toaster } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 
+import { IChat } from "@/model/Chat"
+
 export type Chat = {
   ipAddress: string
   rawMessage: string
@@ -50,6 +52,8 @@ export type Chat = {
   createdAt: string
   updatedAt: string
 }
+
+import { IBannedIP } from "@/model/bannedIP"
 
 export function DashboardTable() {
   const router = useRouter()
@@ -70,7 +74,7 @@ export function DashboardTable() {
           axios.get("/api/behavioral"),
           axios.get("/api/ban"),
         ])
-        const chats: Chat[] = chatRes.data.chats.map((c: any) => ({
+        const chats: Chat[] = chatRes.data.chats.map((c: IChat) => ({
           ipAddress: c.ipAddress,
           rawMessage: c.rawMessage,
           cleanedMessage: c.cleanedMessage,
@@ -85,7 +89,7 @@ export function DashboardTable() {
           updatedAt: c.updatedAt,
         }))
         setData(chats)
-        setBannedIPs(new Set(bannedRes.data.data.map((b: any) => b.ipAddress)))
+        setBannedIPs(new Set(bannedRes.data.data.map((b: IBannedIP) => b.ipAddress)))
       } catch (err) {
         console.error(err)
         toast.error("Failed to fetch data")
@@ -101,10 +105,14 @@ export function DashboardTable() {
     setProcessing(ip)
     try {
       const res = await axios.post("/api/ban", { ip })
-      toast.success(res.data.message || "IP Banned")
+      toast.success(res.data.message as string || "IP Banned")
       setBannedIPs(prev => new Set(prev).add(ip))
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+    } catch (err) {
+      const message =
+            err instanceof Error
+              ? err.message
+              : "Something went wrong";
+            toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }
@@ -116,13 +124,17 @@ export function DashboardTable() {
     try {
       const res = await axios.post("/api/unban", { ip })
       toast.success(res.data.message || "IP Unbanned")
-      setBannedIPs(prev => {
+      setBannedIPs((prev : Set<string>) => {
         const newSet = new Set(prev)
         newSet.delete(ip)
-        return newSet
+        return newSet as Set<string>
       })
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+    } catch (err) {
+      const message =
+            err instanceof Error
+              ? err.message
+              : "Something went wrong";
+            toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }

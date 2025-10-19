@@ -53,6 +53,9 @@ export type FlaggedRow = {
   updatedAt: string
 }
 
+import { IChat } from "@/model/Chat"
+import { IBannedIP } from "@/model/bannedIP"
+
 export function FlaggedTable() {
   const router = useRouter()
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -73,7 +76,7 @@ export function FlaggedTable() {
           axios.get("/api/ban"),
         ])
         setData(
-          resData.data.map((d: any) => ({
+          resData.data.map((d: IChat) => ({
             ipAddress: d.ipAddress,
             rawMessage: d.rawMessage,
             cleanedMessage: d.cleanedMessage,
@@ -96,7 +99,7 @@ export function FlaggedTable() {
         ? resBanned.data
         : []
 
-      setBannedIPs(new Set(bannedData.map((b: any) => b.ipAddress)))
+      setBannedIPs(new Set(bannedData.map((b: IBannedIP) => b.ipAddress)))
       } catch (err) {
         console.error(err)
         toast.error("Failed to fetch flagged data")
@@ -112,10 +115,14 @@ export function FlaggedTable() {
     setProcessing(ip)
     try {
       const res = await axios.post("/api/ban", { ip })
-      toast.success(res.data.message || "IP Banned")
-      setBannedIPs(prev => new Set(prev).add(ip))
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+      toast.success(res.data.message as string || "IP Banned")
+      setBannedIPs(prev => new Set(prev).add(ip) as Set<string>)
+    } catch (err) {
+      const message =
+            err instanceof Error
+              ? err.message
+              : "Something went wrong";
+            toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }
@@ -126,13 +133,17 @@ export function FlaggedTable() {
     try {
       const res = await axios.post("/api/unban", { ip })
       toast.success(res.data.message || "IP Unbanned")
-      setBannedIPs(prev => {
+      setBannedIPs((prev : Set<string>) => {
         const newSet = new Set(prev)
         newSet.delete(ip)
-        return newSet
+        return newSet as Set<string>
       })
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+    } catch (err) {
+      const message =
+            err instanceof Error
+              ? err.message
+              : "Something went wrong";
+            toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }

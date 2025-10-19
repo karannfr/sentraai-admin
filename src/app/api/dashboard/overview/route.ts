@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import connectToDb from "@/lib/connectDB";
-import Obsfucated from "@/model/obsfucated";
 import InjectedData from "@/model/InjectedData";
 import Chat from "@/model/Chat";
 

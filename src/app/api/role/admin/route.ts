@@ -4,7 +4,7 @@ import connectToDb from "@/lib/connectDB";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
 
-export async function POST(req : NextRequest, res : NextResponse) {
+export async function POST(req : NextRequest) {
     const session = await auth.api.getSession({
         headers : await headers()
     })

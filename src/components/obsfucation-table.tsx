@@ -53,6 +53,9 @@ export type ObsfucatedData = {
   updatedAt: string
 }
 
+import { IBannedIP } from "@/model/bannedIP"
+import { IObsfucated } from "@/model/obsfucated"
+
 export function ObsfucationTable() {
   const router = useRouter()
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -75,7 +78,7 @@ export function ObsfucationTable() {
 
         // Map API response
         setData(
-          resData.data.data.map((d: any) => ({
+          resData.data.data.map((d: IObsfucated) => ({
             ipAddress: d.ipAddress,
             rawMessage: d.rawMessage,
             cleanedMessage: d.cleanedMessage,
@@ -95,7 +98,7 @@ export function ObsfucationTable() {
 
         // Handle banned IPs
         const bannedList = Array.isArray(resBanned.data) ? resBanned.data : []
-        setBannedIPs(new Set(bannedList.map((b: any) => b.ipAddress)))
+        setBannedIPs(new Set(bannedList.map((b: IBannedIP) => b.ipAddress)))
       } catch (err) {
         console.error(err)
         toast.error("Failed to fetch obfuscated data")
@@ -112,9 +115,13 @@ export function ObsfucationTable() {
     try {
       const res = await axios.post("/api/ban", { ip })
       toast.success(res.data.message || "IP Banned")
-      setBannedIPs(prev => new Set(prev).add(ip))
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+      setBannedIPs((prev : Set<string>) => new Set(prev).add(ip))
+    } catch (err) {
+      const message =
+      err instanceof Error
+        ? err.message
+        : "Something went wrong";
+      toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }
@@ -126,13 +133,17 @@ export function ObsfucationTable() {
     try {
       const res = await axios.post("/api/unban", { ip })
       toast.success(res.data.message || "IP Unbanned")
-      setBannedIPs(prev => {
+      setBannedIPs((prev : Set<string>) => {
         const newSet = new Set(prev)
         newSet.delete(ip)
-        return newSet
+        return newSet as Set<string>
       })
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+    } catch (err) {
+      const message =
+            err instanceof Error
+              ? err.message
+              : "Something went wrong";
+            toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }

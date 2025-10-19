@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import {NextResponse } from "next/server";
 import connectToDb from "@/lib/connectDB";
 import Obsfucated from "@/model/obsfucated";
 import InjectedData from "@/model/InjectedData";

@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 
-import { ChevronDown } from "lucide-react";
-
 import {
   Card,
   CardContent,

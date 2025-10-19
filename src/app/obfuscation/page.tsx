@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
@@ -14,8 +14,6 @@ export default function Obfuscation() {
   const {
     data: session,
     isPending, // loading state
-    error,
-    refetch,
   } = authClient.useSession();
 
   useEffect(() => {

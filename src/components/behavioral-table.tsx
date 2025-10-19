@@ -16,6 +16,8 @@ import {
 import { ArrowUpDown, ChevronDown } from "lucide-react"
 import axios from "axios"
 
+import { IChat } from "@/model/Chat"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -51,6 +53,8 @@ export type Chat = {
   updatedAt: string
 }
 
+import { IBannedIP } from "@/model/bannedIP"
+
 export function BehaviourTable() {
   const router = useRouter()
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -70,7 +74,7 @@ export function BehaviourTable() {
           axios.get("/api/behavioral"),
           axios.get("/api/ban"),
         ])
-        const chats: Chat[] = chatRes.data.chats.map((c: any) => ({
+        const chats: Chat[] = chatRes.data.chats.map((c: IChat) => ({
           ipAddress: c.ipAddress,
           rawMessage: c.rawMessage,
           cleanedMessage: c.cleanedMessage,
@@ -85,7 +89,7 @@ export function BehaviourTable() {
           updatedAt: c.updatedAt,
         }))
         setData(chats)
-        setBannedIPs(new Set(bannedRes.data.data.map((b: any) => b.ipAddress)))
+        setBannedIPs(new Set(bannedRes.data.data.map((b: IBannedIP) => b.ipAddress)))
       } catch (err) {
         console.error(err)
         toast.error("Failed to fetch data")
@@ -101,10 +105,14 @@ export function BehaviourTable() {
     setProcessing(ip)
     try {
       const res = await axios.post("/api/ban", { ip })
-      toast.success(res.data.message || "IP Banned")
-      setBannedIPs(prev => new Set(prev).add(ip))
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+      toast.success(res.data.message as string || "IP Banned")
+      setBannedIPs((prev : Set<string>) => new Set(prev).add(ip))
+    } catch (err) {
+      const message =
+            err instanceof Error
+              ? err.message
+              : "Something went wrong";
+            toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }
@@ -116,13 +124,17 @@ export function BehaviourTable() {
     try {
       const res = await axios.post("/api/unban", { ip })
       toast.success(res.data.message || "IP Unbanned")
-      setBannedIPs(prev => {
-        const newSet = new Set(prev)
+      setBannedIPs((prev : Set<string>) => {
+        const newSet : Set<string> = new Set(prev)
         newSet.delete(ip)
         return newSet
       })
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Something went wrong!")
+    } catch (err) {
+      const message =
+            err instanceof Error
+              ? err.message
+              : "Something went wrong";
+            toast.error(message || "Something went wrong!")
     } finally {
       setProcessing(null)
     }

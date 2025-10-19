@@ -2,7 +2,7 @@ import connectToDb from "@/lib/connectDB";
 import Obsfucated from "@/model/obsfucated";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   await connectToDb();
   try {
     const data = await Obsfucated.find().sort({ createdAt: -1 });

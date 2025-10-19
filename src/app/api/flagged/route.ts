@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 import connectToDb from "@/lib/connectDB";
 import InjectedData from "@/model/InjectedData";
 
-
-const uri = process.env.MONGO_URI!;
-
 export async function GET() {
   try {
     await connectToDb();
