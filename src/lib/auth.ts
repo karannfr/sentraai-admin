@@ -10,6 +10,7 @@ const client = new MongoClient(process.env.MONGO_URI as string);
 const db = client.db();
 
 export const auth = betterAuth({
+    baseURL: "https://sentraai-admin.karnx.dev/",
     database: mongodbAdapter(db,
         {
             client
