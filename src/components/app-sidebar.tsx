@@ -15,13 +15,18 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem
 } from "./ui/dropdown-menu"
+
+import SignOutButton from "./sign-out";
 
 import { ChevronUp } from "lucide-react"
 import Image from "next/image"
 
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link"
+
+import { ModeToggle } from "./mode-toggle";
 
 import {
   LayoutDashboard,
@@ -57,26 +62,37 @@ export function AppSidebar() {
           ))}
         </SidebarGroup>
       </SidebarContent>
-      {!isPending && session?.user && <SidebarFooter>
+      {!isPending && session?.user && (
+      <SidebarFooter>
         <SidebarMenu className="mb-4">
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild className="cursor-pointer h-fit">
-                  <SidebarMenuButton>
-                    <Image src={session?.user.image as string} alt="Image" width={32} height={32} className="rounded-full"/>
-                    {session?.user.name}
-                    <ChevronUp className="ml-auto" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="top"
-                  className="w-full cursor-pointer"
-                >
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          </SidebarMenu>
-      </SidebarFooter>}
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild className="cursor-pointer h-fit">
+                <SidebarMenuButton>
+                  <Image
+                    src={session.user.image as string}
+                    alt="Image"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                  {session.user.name}
+                  <ChevronUp className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" className="w-full">
+                <div className="p-2">
+                  <ModeToggle/>
+                </div>
+                <div className="p-2">
+                  <SignOutButton/>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    )}
     </Sidebar>
   )
 }
